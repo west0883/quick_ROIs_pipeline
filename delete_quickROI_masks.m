@@ -7,7 +7,6 @@
 
 function [] = delete_quickROI_masks(parameters)
 
-    
     % Establish input and output folders 
     dir_in_rep_base=[parameters.dir_exper 'representative images\'];
     dir_in=[parameters.dir_exper 'quick ROIs\']; 
@@ -47,6 +46,25 @@ function [] = delete_quickROI_masks(parameters)
 
         yDim = parameters.pixels(1);
         xDim = parameters.pixels(2);
+        
+         % Load brain mask 
+        if parameters.mask_flag
+           
+            % Find and load brain masks
+            brainMask_combined_input_name = [parameters.brainMask_dir_in parameters.brainMask_input_filename];
+            brainMask_file_string = CreateFileStrings(brainMask_combined_input_name, mouse, [], [], [], false); 
+            load(brainMask_file_string, parameters.brainMask_input_variable); 
+           
+            % Rename brain mask indices to avoid confusion/overwriting. 
+            eval(['brain_mask_indices = ' parameters.brainMask_input_variable ';']); 
+
+            % Get the inverse of the brain mask.
+            inverse_brain_mask_indices=true(parameters.pixels(1), parameters.pixels(2)); 
+            inverse_brain_mask_indices(brain_mask_indices)=false;
+
+            % Apply brain masks to the bRep image 
+            bRep(inverse_brain_mask_indices)=NaN;    
+        end 
         
         %  % Determine if a mask file for this mouse already exists.
         existing_mask_flag=isfile([dir_in 'quickROIs_m' mouse '.mat']); 

@@ -21,6 +21,20 @@ parameters.dir_exper = ['Y:\Sarah\Analysis\Experiments\' parameters.experiment_n
 % Output directory
 parameters.dir_output_base=['Y:\Sarah\Analysis\Experiments\' parameters.experiment_name '\quick ROIs\']; 
 
+% Location and filenames of ROI masks (cell array formatting) and
+% variable name (string).
+parameters.ROI_dir_in_base = {['Y:\Sarah\Analysis\Experiments\' parameters.experiment_name '\quick ROIs\']};
+parameters.ROI_input_filename = {'quickROIs_m', 'mouse number', '.mat'}; 
+parameters.ROI_input_variable = 'masks';
+
+% Is there a brain mask for this mouse?
+parameters.mask_flag=true; 
+
+% Directory, file name, and variable name for brain mask, if present.
+parameters.brainMask_dir_in = {parameters.dir_exper 'masks\'};
+parameters.brainMask_input_filename = {'masks_m', 'mouse number', '.mat'};
+parameters.brainMask_input_variable = 'indices_of_mask';
+
 % (DON'T EDIT). Load the "mice_all" variable you've created with "create_mice_all.m"
 load([parameters.dir_exper 'mice_all.mat']);
 
@@ -42,8 +56,14 @@ parameters.ROI_names ={'M2 left';
 
 % Number of pixels you expect to have:
 parameters.pixels = [256, 256];
+
 %% Run masking
 manual_ROI_masking_loop(parameters);
 
 %% Delete any you don't like
 delete_quickROI_masks(parameters);
+
+%% Apply brain mask indices
+apply_brain_masks(parameters); 
+        
+        

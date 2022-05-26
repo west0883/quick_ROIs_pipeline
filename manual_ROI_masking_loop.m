@@ -53,6 +53,25 @@ function []=manual_ROI_masking_loop(parameters)
         yDim = parameters.pixels(1);
         xDim = parameters.pixels(2);
         
+        % Load brain mask 
+        if parameters.mask_flag
+           
+            % Find and load brain masks
+            brainMask_combined_input_name = [parameters.brainMask_dir_in parameters.brainMask_input_filename];
+            brainMask_file_string = CreateFileStrings(brainMask_combined_input_name, mouse, [], [], [], false); 
+            load(brainMask_file_string, parameters.brainMask_input_variable); 
+           
+            % Rename brain mask indices to avoid confusion/overwriting. 
+            eval(['brain_mask_indices = ' parameters.brainMask_input_variable ';']); 
+
+            % Get the inverse of the brain mask.
+            inverse_brain_mask_indices=true(yDim, xDim); 
+            inverse_brain_mask_indices(brain_mask_indices)=false;
+
+            % Apply brain masks to the bRep image 
+            bRep(inverse_brain_mask_indices)=NaN;    
+        end 
+        
         % Determine if a mask file for this mouse already exists.
         existing_mask_flag=isfile([dir_out 'quickROIs_m' mouse '.mat']); 
         
@@ -72,11 +91,7 @@ function []=manual_ROI_masking_loop(parameters)
         
         % ***Run the function that runs the masking itself***
         [masks, indices_of_mask]=ManualMasking(bRep, existing_masks);     
-        
-        % Make a version of "masks" that puts all the masks on the same
-        % plane.
-        
-        
+      
         % Save whatever additions you've made to the mask file 
         save([dir_out 'quickROIs_m' mouse '.mat'], 'masks', 'indices_of_mask');
        
