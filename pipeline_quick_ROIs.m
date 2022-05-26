@@ -42,7 +42,7 @@ load([parameters.dir_exper 'mice_all.mat']);
 parameters.mice_all = mice_all; 
 
 % ****Change here if there are specific mice, days, and/or stacks you want to work with**** 
-parameters.mice_all=parameters.mice_all(1);
+parameters.mice_all=parameters.mice_all(2:3);
  
 % List the names of the regions you want to draw. 
 parameters.ROI_names ={'M2 left';

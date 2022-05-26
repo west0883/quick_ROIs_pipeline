@@ -27,23 +27,20 @@ function [] = apply_brain_masks(parameters)
             % Load brain masks 
             brainMask_combined_input_name = [parameters.brainMask_dir_in parameters.brainMask_input_filename];
             brainMask_file_string = CreateFileStrings(brainMask_combined_input_name, mouse, [], [], [], false); 
-            load(brainMask_file_string, parameters.brainMask_input_variable); 
+            load(brainMask_file_string); % parameters.brainMask_input_variable); 
            
             % Rename brain mask indices to avoid confusion/overwriting. 
-            eval(['brain_mask= ' parameters.brainMask_input_variable ';']);
-            eval(['clear ' parameters.brainMask_input_variable]);
+            eval(['brain_mask= masks;']) % parameters.brainMask_input_variable ';']);
+            brain_mask_indices = indices_of_mask;
 
-            % Get the inverse of the brain mask.
-            %inverse_brain_mask_indices=true(parameters.pixels(1), parameters.pixels(2)); 
-            %inverse_brain_mask_indices(brain_mask_indices)= 0;
-            
-            % Reshape both sets of masks
-            % inverse_brain_mask_indices = reshape(inverse_brain_mask_indices, parameters.pixels(1) * parameters.pixels(2), size(inverse_brain_mask_indices,3));
-            listed =find(inverse_brain_mask_indices == 1);
             ROI_masks =reshape(ROI_masks, parameters.pixels(1) * parameters.pixels(2), size(ROI_masks,3));
-            ROI_masks_nobrain = ROI_masks;
-            ROI_masks_nobrain(listed,:) = [];
+            ROI_masks = ROI_masks(brain_mask_indices,:); 
         end
     
+    % Rename ROI masks
+    masks = ROI_masks;
+    
     % Save
+    save([dir_in 'brainOnly_masks_m' mouse '.mat'], 'masks'); 
+    
 end 
