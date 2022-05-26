@@ -18,10 +18,6 @@ parameters.experiment_name='Random Motorized Treadmill';
 % Get experiement directory, where create_mice_all.mat is saved
 parameters.dir_exper = ['Y:\Sarah\Analysis\Experiments\' parameters.experiment_name '\']; 
 
-% Input directory & file name of images you want to draw on.
-parameters.dir_input_name = {'Y:\Sarah\Analysis\Experiments\' parameters.experiment_name '\representative images\', 'mouse' , '\', 'day' '\'};
-parameters.input_file_name = {'bRep.mat'}; 
-
 % Output directory
 parameters.dir_output_base=['Y:\Sarah\Analysis\Experiments\' parameters.experiment_name '\quick ROIs\']; 
 
@@ -46,8 +42,7 @@ parameters.ROI_names ={'M2 left';
 
 % Number of pixels you expect to have:
 parameters.pixels = [256, 256];
-%% Load reference days
-% If you want to use pre-selected reference days, load that list
+%% Run masking
 manual_ROI_masking_loop(parameters);
 
 %% Delete any you don't like
